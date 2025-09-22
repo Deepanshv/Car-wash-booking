@@ -21,21 +21,21 @@ app.use("/api/bookings/search", searchRoutes);
 
 // Basic Route
 app.get("/", (req, res) => {
-    res.send("Car Wash Booking API is running!");
+  res.send("Car Wash Booking API is running!");
 });
 
 // Error Middleware
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
-// Connect to MongoDB and start server
+// Connect to MongoDB
 mongoose
-    .connect(
-        process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 }
-    )
-    .then(() => {
-        console.log("MongoDB connected successfully.");
-        app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
-    })
-    .catch((err) => console.error("MongoDB connection error:", err));
+  .connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
+  .then(() => {
+    console.log("MongoDB connected successfully.");
+  })
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+// Start server
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
