@@ -60,7 +60,7 @@ const HomePage: React.FC = () => {
           response = await api.get(`/api/bookings?${params.toString()}`);
         }
 
-        setBookings(response.data.bookings);
+        setBookings(response.data.bookings || []);
         setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error("Error fetching bookings:", error);

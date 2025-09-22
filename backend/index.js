@@ -9,7 +9,24 @@ const { errorHandler } = require("./middleware/errorMiddleware.js");
 const app = express();
 
 // Middlewares
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:3000', // For local frontend development
+  'https://car-wash-booking-dv.vercel.app', // Your Vercel frontend URL
+  process.env.FRONTEND_URL // For dynamic frontend URL from environment variable
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
 app.use(express.json()); // for parsing application/json
 app.use(morgan("dev"));
 
