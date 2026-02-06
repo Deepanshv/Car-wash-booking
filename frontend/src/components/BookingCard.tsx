@@ -91,7 +91,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateSt
           <DeleteIcon />
         </IconButton>
         <IconButton
-          aria-label="more"
+          aria-label="open booking actions menu"
           id="long-button"
           aria-controls={open ? 'long-menu' : undefined}
           aria-expanded={open ? 'true' : undefined}

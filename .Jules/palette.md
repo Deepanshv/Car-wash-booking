@@ -1,0 +1,3 @@
+## 2025-05-14 - [Aria Labels & Loading States]
+**Learning:** Icon-only buttons in Material UI (IconButton) often default to generic or missing aria-labels, which is a common accessibility gap. Adding dynamic aria-labels (like theme switching) and clear action descriptions (like "open booking actions menu") significantly improves the screen reader experience. Additionally, providing immediate visual feedback during async operations (loading spinners) prevents user confusion and double-submissions.
+**Action:** Always check for IconButtons without aria-labels and ensure all form submissions have a clear loading state.
