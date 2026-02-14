@@ -1,0 +1,3 @@
+## 2025-05-15 - Enhancing Form Interactivity and Accessibility
+**Learning:** Users need immediate feedback during asynchronous operations (like form submissions) to know the app is working and to prevent duplicate actions. Disabling buttons and showing a loading indicator is a critical UX pattern. Additionally, providing explicit error feedback using clear components like MUI Alerts improves transparency when things go wrong. Dynamic ARIA labels for state-switching elements (like theme togglers) are essential for accessible screen reader experiences.
+**Action:** Always implement `isSubmitting` and `error` states for async forms, and ensure all icon-only buttons have context-aware `aria-label` attributes.
