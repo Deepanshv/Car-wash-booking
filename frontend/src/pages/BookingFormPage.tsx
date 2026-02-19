@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Typography, Paper, SelectChangeEvent, Stack, Grid } from '@mui/material';
+import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Typography, Paper, SelectChangeEvent, Stack, Grid, CircularProgress, Alert } from '@mui/material';
 import { Booking } from '../App';
+import { AxiosError } from 'axios';
 
 // Use a partial of the booking for the form data
 type FormData = Partial<Booking>;
@@ -10,6 +11,8 @@ type FormData = Partial<Booking>;
 const BookingFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     customerName: '',
     phone: '',
@@ -56,6 +59,8 @@ const BookingFormPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
     try {
       if (id) {
         await api.put(`/api/bookings/${id}`, formData);
@@ -63,8 +68,15 @@ const BookingFormPage: React.FC = () => {
         await api.post('/api/bookings', formData);
       }
       navigate('/');
-    } catch (error) {
-      console.error('Error saving booking:', error);
+    } catch (err) {
+      console.error('Error saving booking:', err);
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || 'Failed to save booking. Please try again.');
+      } else {
+        setError('An unexpected error occurred.');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -74,26 +86,31 @@ const BookingFormPage: React.FC = () => {
             {id ? 'Edit Booking' : 'Add New Booking'}
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+            {error && (
+                <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
+                    {error}
+                </Alert>
+            )}
             <Grid container spacing={2}>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Customer Name" name="customerName" value={formData.customerName} onChange={handleChange} required />
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} required />
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Car Make" name="carDetails.make" value={formData.carDetails?.make} onChange={handleChange} required />
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Car Model" name="carDetails.model" value={formData.carDetails?.model} onChange={handleChange} required />
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Car Year" name="carDetails.year" type="number" value={formData.carDetails?.year} onChange={handleChange} required />
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Car Type" name="carDetails.type" value={formData.carDetails?.type} onChange={handleChange} />
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <FormControl fullWidth margin="normal">
                         <InputLabel>Service Type</InputLabel>
                         <Select label="Service Type" name="serviceType" value={formData.serviceType} onChange={handleChange}>
@@ -103,20 +120,20 @@ const BookingFormPage: React.FC = () => {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Booking Date" name="date" type="date" value={formData.date} onChange={handleChange} InputLabelProps={{ shrink: true }} required />
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Time Slot" name="timeSlot" value={formData.timeSlot} onChange={handleChange} required />
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Duration (minutes)" name="duration" type="number" value={formData.duration} onChange={handleChange} required />
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField fullWidth margin="normal" label="Price" name="price" type="number" value={formData.price} onChange={handleChange} required />
                 </Grid>
                 {id && (
-                    <Grid xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Status</InputLabel>
                             <Select label="Status" name="status" value={formData.status} onChange={handleChange}>
@@ -130,8 +147,18 @@ const BookingFormPage: React.FC = () => {
                 )}
             </Grid>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 3 }}>
-                <Button type="submit" variant="contained" color="primary" size="large" fullWidth>Save Booking</Button>
-                <Button variant="outlined" size="large" onClick={() => navigate('/')} fullWidth>Cancel</Button>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    fullWidth
+                    disabled={isSubmitting}
+                    startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+                >
+                    {isSubmitting ? 'Saving...' : 'Save Booking'}
+                </Button>
+                <Button variant="outlined" size="large" onClick={() => navigate('/')} fullWidth disabled={isSubmitting}>Cancel</Button>
             </Stack>
         </Box>
     </Paper>
