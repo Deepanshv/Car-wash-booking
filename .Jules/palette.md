@@ -1,0 +1,3 @@
+## 2026-02-23 - Standardizing Form Loading and Error States
+**Learning:** For a consistent and accessible user experience in this MUI v7 app, async form submissions should always provide visual feedback via a `CircularProgress` spinner in the button's `startIcon` and a text change (e.g., 'Save' to 'Saving...'). Additionally, explicit error feedback using the `Alert` component is crucial for accessibility, ensuring screen readers and users are immediately aware of API failures.
+**Action:** Apply the `isSubmitting` and `error` state pattern to all interactive forms. Use `instanceof AxiosError` to extract meaningful error messages from API responses.
