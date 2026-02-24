@@ -1,0 +1,3 @@
+## 2025-05-14 - Loading and Error Feedback Patterns
+**Learning:** For forms in this MUI-based app, users lack feedback during async operations. The standard 'Palette' pattern here is to use `CircularProgress` (size 20) in the `startIcon` of the submit button, change the text to "Saving...", and disable both the submit and cancel buttons. Additionally, using an `Alert` component above the form provides clear error feedback when API calls fail.
+**Action:** Always implement this combined feedback pattern (Loading Button + Error Alert) for all data-entry forms to ensure a smooth and informative user experience.
