@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Typography, Paper, SelectChangeEvent, Stack, Grid } from '@mui/material';
+import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Typography, Paper, SelectChangeEvent, Stack, Grid, CircularProgress, Alert } from '@mui/material';
 import { Booking } from '../App';
+import { AxiosError } from 'axios';
 
 // Use a partial of the booking for the form data
 type FormData = Partial<Booking>;
@@ -10,6 +11,8 @@ type FormData = Partial<Booking>;
 const BookingFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     customerName: '',
     phone: '',
@@ -56,6 +59,8 @@ const BookingFormPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
     try {
       if (id) {
         await api.put(`/api/bookings/${id}`, formData);
@@ -65,6 +70,13 @@ const BookingFormPage: React.FC = () => {
       navigate('/');
     } catch (error) {
       console.error('Error saving booking:', error);
+      if (error instanceof AxiosError) {
+        setSubmitError(error.response?.data?.message || 'An error occurred while saving the booking. Please try again.');
+      } else {
+        setSubmitError('An unexpected error occurred. Please try again.');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -73,6 +85,11 @@ const BookingFormPage: React.FC = () => {
         <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4 }}>
             {id ? 'Edit Booking' : 'Add New Booking'}
         </Typography>
+        {submitError && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+                {submitError}
+            </Alert>
+        )}
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
             <Grid container spacing={2}>
                 <Grid xs={12} sm={6}>
@@ -130,8 +147,18 @@ const BookingFormPage: React.FC = () => {
                 )}
             </Grid>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 3 }}>
-                <Button type="submit" variant="contained" color="primary" size="large" fullWidth>Save Booking</Button>
-                <Button variant="outlined" size="large" onClick={() => navigate('/')} fullWidth>Cancel</Button>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    fullWidth
+                    disabled={isSubmitting}
+                    startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+                >
+                    {isSubmitting ? 'Saving...' : 'Save Booking'}
+                </Button>
+                <Button variant="outlined" size="large" onClick={() => navigate('/')} fullWidth disabled={isSubmitting}>Cancel</Button>
             </Stack>
         </Box>
     </Paper>
