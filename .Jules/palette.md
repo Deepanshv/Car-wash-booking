@@ -1,0 +1,3 @@
+## 2025-05-14 - [Form Submission Feedback]
+**Learning:** In asynchronous form handlers, users need immediate visual feedback to understand that their request is being processed. Disabling secondary actions (like 'Cancel') alongside the primary button prevents accidental navigation or state inconsistencies during the 'in-flight' period.
+**Action:** Always implement an 'isSubmitting' state to disable all form-related buttons and provide a loading indicator (e.g., CircularProgress) with a descriptive label (e.g., 'Saving...') during async operations. Ensure the state is reset in a 'finally' block.
