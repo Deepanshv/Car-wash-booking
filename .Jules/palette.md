@@ -1,0 +1,3 @@
+## 2025-03-02 - Async Form Feedback Pattern
+**Learning:** In this MUI-based application, providing immediate feedback during form submission by updating the button label to "Saving..." and adding a `CircularProgress` spinner in the `startIcon` significantly improves perceived responsiveness. Additionally, disabling both the "Save" and "Cancel" buttons prevents accidental navigation or duplicate submissions during the transit state.
+**Action:** Always implement an `isSubmitting` state for asynchronous form actions, and use it to disable all interactive form controls while displaying a clear loading indicator on the primary action button.
