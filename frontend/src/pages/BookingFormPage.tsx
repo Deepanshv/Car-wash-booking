@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
+import { AxiosError } from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Typography, Paper, SelectChangeEvent, Stack, Grid } from '@mui/material';
+import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Typography, Paper, SelectChangeEvent, Stack, Grid, Alert, Collapse, CircularProgress } from '@mui/material';
 import { Booking } from '../App';
 
 // Use a partial of the booking for the form data
@@ -10,6 +11,8 @@ type FormData = Partial<Booking>;
 const BookingFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     customerName: '',
     phone: '',
@@ -56,6 +59,8 @@ const BookingFormPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
     try {
       if (id) {
         await api.put(`/api/bookings/${id}`, formData);
@@ -63,8 +68,15 @@ const BookingFormPage: React.FC = () => {
         await api.post('/api/bookings', formData);
       }
       navigate('/');
-    } catch (error) {
-      console.error('Error saving booking:', error);
+    } catch (err) {
+      console.error('Error saving booking:', err);
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || 'Failed to save booking. Please try again.');
+      } else {
+        setError('An unexpected error occurred.');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -74,6 +86,11 @@ const BookingFormPage: React.FC = () => {
             {id ? 'Edit Booking' : 'Add New Booking'}
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+            <Collapse in={!!error}>
+                <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
+                    {error}
+                </Alert>
+            </Collapse>
             <Grid container spacing={2}>
                 <Grid xs={12} sm={6}>
                     <TextField fullWidth margin="normal" label="Customer Name" name="customerName" value={formData.customerName} onChange={handleChange} required />
@@ -130,8 +147,26 @@ const BookingFormPage: React.FC = () => {
                 )}
             </Grid>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 3 }}>
-                <Button type="submit" variant="contained" color="primary" size="large" fullWidth>Save Booking</Button>
-                <Button variant="outlined" size="large" onClick={() => navigate('/')} fullWidth>Cancel</Button>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    fullWidth
+                    disabled={isSubmitting}
+                    startIcon={isSubmitting ? <CircularProgress size={24} color="inherit" /> : null}
+                >
+                    {isSubmitting ? 'Saving...' : 'Save Booking'}
+                </Button>
+                <Button
+                    variant="outlined"
+                    size="large"
+                    onClick={() => navigate('/')}
+                    fullWidth
+                    disabled={isSubmitting}
+                >
+                    Cancel
+                </Button>
             </Stack>
         </Box>
     </Paper>
