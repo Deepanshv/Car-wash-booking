@@ -1,0 +1,3 @@
+## 2026-03-21 - [Implement async feedback for booking form]
+**Learning:** In MUI projects, it's important to stick to the existing version's syntax (e.g., Grid legacy props vs. new 'size' prop) to avoid unintended layout regressions during micro-UX improvements. Providing both loading (spinner/disabled states) and error (Alert/Collapse) feedback significantly improves the perceived reliability of async forms.
+**Action:** Always check the installed MUI version and existing component usage before applying modern syntax. Keep PRs focused on the specific UX enhancement and ensure all debug logs and verification artifacts are removed before submission.
