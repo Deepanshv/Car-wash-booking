@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Typography, Paper, SelectChangeEvent, Stack, Grid } from '@mui/material';
+import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Typography, Paper, SelectChangeEvent, Stack, Grid, CircularProgress } from '@mui/material';
 import { Booking } from '../App';
 
 // Use a partial of the booking for the form data
@@ -22,6 +22,7 @@ const BookingFormPage: React.FC = () => {
     status: 'Pending',
     addOns: [],
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -56,6 +57,7 @@ const BookingFormPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       if (id) {
         await api.put(`/api/bookings/${id}`, formData);
@@ -65,6 +67,8 @@ const BookingFormPage: React.FC = () => {
       navigate('/');
     } catch (error) {
       console.error('Error saving booking:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -130,8 +134,26 @@ const BookingFormPage: React.FC = () => {
                 )}
             </Grid>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 3 }}>
-                <Button type="submit" variant="contained" color="primary" size="large" fullWidth>Save Booking</Button>
-                <Button variant="outlined" size="large" onClick={() => navigate('/')} fullWidth>Cancel</Button>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    fullWidth
+                    disabled={isSubmitting}
+                    startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+                >
+                    {isSubmitting ? 'Saving...' : 'Save Booking'}
+                </Button>
+                <Button
+                    variant="outlined"
+                    size="large"
+                    onClick={() => navigate('/')}
+                    fullWidth
+                    disabled={isSubmitting}
+                >
+                    Cancel
+                </Button>
             </Stack>
         </Box>
     </Paper>
