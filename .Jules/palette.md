@@ -1,0 +1,3 @@
+## 2025-03-23 - Progressive Disclosure of Form Submission States
+**Learning:** For asynchronous form submissions in MUI, using a 'CircularProgress' (size ~20px) within the 'startIcon' of the primary button, combined with disabling both primary and secondary (e.g., 'Cancel') buttons, provides the clearest feedback and prevents accidental navigation or duplicate submissions. Wrapping 'Alert' in a 'Collapse' component ensures a smooth entry/exit for error messages without causing layout jumps.
+**Action:** Always implement 'finally' blocks to reset loading states and use 'Collapse' for 'Alert' visibility to maintain a polished UI feel during transient states.
