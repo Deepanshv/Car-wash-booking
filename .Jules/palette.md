@@ -1,0 +1,3 @@
+## 2025-03-24 - MUI Dialog for Deletion Confirmation
+**Learning:** Replacing native browser `window.confirm` with a custom MUI `Dialog` provides a more consistent design language and allows for better feedback (e.g., loading spinners) during asynchronous operations. In MUI v7, it's important to use `PaperProps` on `Dialog` to ensure correct background colors and remove elevation gradients in dark mode.
+**Action:** Use the `isDeleting` state to disable both "Delete" and "Cancel" buttons during the API call, and include a `CircularProgress` (size 20) with `color="inherit"` inside the `startIcon` or next to the button label for loading feedback.
