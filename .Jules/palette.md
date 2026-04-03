@@ -1,0 +1,3 @@
+## 2025-05-15 - [Accessible Deletion Confirmation]
+**Learning:** Replaced browser-native `window.confirm` with a custom MUI `Dialog` for destructive actions. This improves visual consistency, branding, and accessibility (via `aria-labelledby` and `aria-describedby`).
+**Action:** Always prefer design-system confirmation dialogs over native ones. Use loading states (`isDeleting`) on buttons to provide feedback and prevent duplicate requests. Apply `PaperProps={{ sx: { backgroundColor: 'background.paper', backgroundImage: 'none' } }}` on Dialogs to ensure correct dark mode surface rendering in MUI v7.
