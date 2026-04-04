@@ -1,0 +1,3 @@
+## 2025-05-15 - [MUI Delete Confirmation Dialog with Loading State]
+**Learning:** Replacing native `window.confirm` with a custom MUI `Dialog` provides a consistent user experience and allows for inline loading feedback (e.g., `isDeleting` state with `CircularProgress`). Using `PaperProps={{ sx: { backgroundImage: 'none' } }}` on the `Dialog` component in MUI v7 prevents unwanted elevation overlays in dark mode, ensuring the `background.paper` color is clean and readable.
+**Action:** Always use custom confirmation dialogs for destructive actions in MUI-based projects to maintain design consistency and provide better feedback during async operations.
