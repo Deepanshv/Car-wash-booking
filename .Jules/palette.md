@@ -1,0 +1,3 @@
+## 2025-05-14 - MUI Dialog UX for Destructive Actions
+**Learning:** For destructive actions (like deletion), focusing the "Cancel" button by default (using `autoFocus`) provides a safer user experience than focusing the "Delete" button. It prevents accidental data loss if a user is rapidly interacting with the keyboard. Additionally, providing specific context (e.g., the name of the item being deleted) in the dialog text enhances clarity and confidence.
+**Action:** Always apply `autoFocus` to the non-destructive action in confirmation dialogs and include specific identifiers of the affected item in the message.
