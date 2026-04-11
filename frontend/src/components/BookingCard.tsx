@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardActions, Typography, IconButton, Divider, Chip, Box, Menu, MenuItem } from '@mui/material';
+import { Card, CardContent, CardActions, Typography, IconButton, Divider, Chip, Box, Menu, MenuItem, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -84,22 +84,28 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateSt
         </Box>
       </CardContent>
       <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <IconButton component={Link} to={`/edit/${booking._id}`} aria-label="edit">
-          <EditIcon />
-        </IconButton>
-        <IconButton onClick={handleDelete} aria-label="delete">
-          <DeleteIcon />
-        </IconButton>
-        <IconButton
-          aria-label="more"
-          id="long-button"
-          aria-controls={open ? 'long-menu' : undefined}
-          aria-expanded={open ? 'true' : undefined}
-          aria-haspopup="true"
-          onClick={handleClick}
-        >
-          <MoreVertIcon />
-        </IconButton>
+        <Tooltip title="Edit">
+          <IconButton component={Link} to={`/edit/${booking._id}`} aria-label="edit">
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete">
+          <IconButton onClick={handleDelete} aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Change Status">
+          <IconButton
+            aria-label="more"
+            id="long-button"
+            aria-controls={open ? 'long-menu' : undefined}
+            aria-expanded={open ? 'true' : undefined}
+            aria-haspopup="true"
+            onClick={handleClick}
+          >
+            <MoreVertIcon />
+          </IconButton>
+        </Tooltip>
         <Menu
           id="long-menu"
           MenuListProps={{ 'aria-labelledby': 'long-button' }}
