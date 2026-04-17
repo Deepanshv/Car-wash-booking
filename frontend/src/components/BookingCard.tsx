@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardActions, Typography, IconButton, Divider, Chip, Box, Menu, MenuItem } from '@mui/material';
+import { Card, CardContent, CardActions, Typography, IconButton, Divider, Chip, Box, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, CircularProgress } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -24,6 +24,8 @@ const statusColors: { [key in Booking['status']]: 'primary' | 'secondary' | 'suc
 
 const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateStatus }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -39,15 +41,19 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateSt
     handleClose();
   };
 
+  const handleDeleteClick = () => setShowConfirm(true);
+  const handleCancelDelete = () => setShowConfirm(false);
+
   const handleDelete = async () => {
-    // This can be moved to HomePage if you want a confirmation dialog first
-    if (window.confirm('Are you sure you want to delete this booking?')) {
-        try {
-            await api.delete(`/api/bookings/${booking._id}`);
-            onDelete(booking._id);
-        } catch (error) {
-            console.error('Error deleting booking:', error);
-        }
+    setIsDeleting(true);
+    try {
+      await api.delete(`/api/bookings/${booking._id}`);
+      onDelete(booking._id);
+      setShowConfirm(false);
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -87,7 +93,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateSt
         <IconButton component={Link} to={`/edit/${booking._id}`} aria-label="edit">
           <EditIcon />
         </IconButton>
-        <IconButton onClick={handleDelete} aria-label="delete">
+        <IconButton onClick={handleDeleteClick} aria-label="delete">
           <DeleteIcon />
         </IconButton>
         <IconButton
@@ -113,6 +119,36 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateSt
           <MenuItem onClick={() => handleStatusChange('Cancelled')}>Cancelled</MenuItem>
         </Menu>
       </CardActions>
+
+      <Dialog
+        open={showConfirm}
+        onClose={handleCancelDelete}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+        PaperProps={{ sx: { backgroundColor: 'background.paper', backgroundImage: 'none' } }}
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete the booking for <strong>{booking.customerName}</strong>? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ pb: 2, px: 3 }}>
+          <Button onClick={handleCancelDelete} disabled={isDeleting}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDelete}
+            color="error"
+            variant="contained"
+            disabled={isDeleting}
+            startIcon={isDeleting ? <CircularProgress size={20} color="inherit" /> : <DeleteIcon />}
+            autoFocus
+          >
+            {isDeleting ? 'Deleting...' : 'Delete'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
