@@ -22,8 +22,19 @@ const Navbar: React.FC = () => {
         <Button color="inherit" component={RouterLink} to="/add">
           New Booking
         </Button>
-        <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-          {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+        <IconButton
+          sx={{ ml: 1 }}
+          onClick={colorMode.toggleColorMode}
+          color="inherit"
+          aria-label={`Switch to ${
+            theme.palette.mode === 'dark' ? 'light' : 'dark'
+          } mode`}
+        >
+          {theme.palette.mode === 'dark' ? (
+            <Brightness7Icon />
+          ) : (
+            <Brightness4Icon />
+          )}
         </IconButton>
       </Toolbar>
     </AppBar>
