@@ -1,0 +1,3 @@
+## 2025-05-15 - Improving Deletion UX with MUI Dialog and Tooltips
+**Learning:** Replacing native browser alerts with themed components like MUI Dialog significantly improves the application's visual consistency. Additionally, using `onClose={() => !isDeleting && setShowConfirm(false)}` is a robust pattern to prevent users from accidentally closing a confirmation dialog while an asynchronous destructive action is in progress. Adding tooltips to icon-only buttons is a small but high-impact accessibility and usability win.
+**Action:** Always prefer themed Dialogs over `window.confirm` and ensure destructive actions have clear loading feedback and are protected from interruption.
