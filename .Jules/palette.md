@@ -1,0 +1,3 @@
+## 2025-05-14 - Replace native confirm with MUI Dialog and add tooltips
+**Learning:** Replacing native browser dialogs (window.confirm) with themed MUI Dialogs significantly improves visual consistency, especially in dark mode. Adding tooltips to icon-only buttons provides critical visual labels for non-screen-reader users, enhancing discoverability without cluttering the UI. Implementing loading states (CircularProgress) within destructive actions prevents double-submissions and provides immediate feedback.
+**Action:** Always audit for native alerts/confirms and icon-only buttons in new codebases to apply these Micro-UX enhancements.
