@@ -1,0 +1,3 @@
+## 2026-05-27 - [MUI Dialog Stacking & Transitions]
+**Learning:** When implementing an MUI Dialog within a component that uses CSS transforms (like a card with a hover-scale effect), the dialog can inherit the transformed stacking context, potentially causing z-index issues with other page elements. Additionally, MUI Dialogs have entry/exit transitions that can result in semi-transparent screenshots if captured immediately after the trigger action.
+**Action:** Move the `Dialog` component outside of the transformed element (e.g., using a React Fragment) to ensure it correctly overlays the entire viewport. When performing visual verification, include a brief timeout (e.g., 500ms) to allow transitions to complete before taking a screenshot.
