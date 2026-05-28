@@ -1,0 +1,3 @@
+## 2026-05-28 - [MUI Dialog for Destructive Actions]
+**Learning:** Replacing native browser `window.confirm` with themed MUI `Dialog` components significantly improves UI consistency and allows for better user feedback, such as loading states during asynchronous deletions. Adding context (e.g., the customer's name) in the dialog prevents accidental data loss and makes the action feel more deliberate.
+**Action:** Always prefer themed Dialog components over native alerts/confirms for destructive or important actions. Include a loading indicator in the confirm button and disable dialog closure during the asynchronous operation.
