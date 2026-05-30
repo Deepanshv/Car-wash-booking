@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardActions, Typography, IconButton, Divider, Chip, Box, Menu, MenuItem } from '@mui/material';
+import { Card, CardContent, CardActions, Typography, IconButton, Divider, Chip, Box, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, CircularProgress } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -24,30 +24,23 @@ const statusColors: { [key in Booking['status']]: 'primary' | 'secondary' | 'suc
 
 const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateStatus }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const open = Boolean(anchorEl);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleStatusChange = (status: Booking['status']) => {
     onUpdateStatus(booking._id, status);
-    handleClose();
+    setAnchorEl(null);
   };
 
-  const handleDelete = async () => {
-    // This can be moved to HomePage if you want a confirmation dialog first
-    if (window.confirm('Are you sure you want to delete this booking?')) {
-        try {
-            await api.delete(`/api/bookings/${booking._id}`);
-            onDelete(booking._id);
-        } catch (error) {
-            console.error('Error deleting booking:', error);
-        }
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true);
+    try {
+      await api.delete(`/api/bookings/${booking._id}`);
+      onDelete(booking._id);
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+      setIsDeleting(false);
     }
   };
 
@@ -87,31 +80,33 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateSt
         <IconButton component={Link} to={`/edit/${booking._id}`} aria-label="edit">
           <EditIcon />
         </IconButton>
-        <IconButton onClick={handleDelete} aria-label="delete">
+        <IconButton onClick={() => setDeleteDialogOpen(true)} aria-label="delete" color="error">
           <DeleteIcon />
         </IconButton>
-        <IconButton
-          aria-label="more"
-          id="long-button"
-          aria-controls={open ? 'long-menu' : undefined}
-          aria-expanded={open ? 'true' : undefined}
-          aria-haspopup="true"
-          onClick={handleClick}
-        >
+        <IconButton aria-label="more" onClick={(e) => setAnchorEl(e.currentTarget)}>
           <MoreVertIcon />
         </IconButton>
-        <Menu
-          id="long-menu"
-          MenuListProps={{ 'aria-labelledby': 'long-button' }}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-        >
+        <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
           <MenuItem onClick={() => handleStatusChange('Pending')}>Pending</MenuItem>
           <MenuItem onClick={() => handleStatusChange('Confirmed')}>Confirmed</MenuItem>
           <MenuItem onClick={() => handleStatusChange('Completed')}>Completed</MenuItem>
           <MenuItem onClick={() => handleStatusChange('Cancelled')}>Cancelled</MenuItem>
         </Menu>
+
+        <Dialog open={deleteDialogOpen} onClose={() => !isDeleting && setDeleteDialogOpen(false)}>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Delete booking for <strong>{booking.customerName}</strong>?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDeleteDialogOpen(false)} disabled={isDeleting}>Cancel</Button>
+            <Button onClick={handleDeleteConfirm} color="error" variant="contained" disabled={isDeleting} startIcon={isDeleting && <CircularProgress size={20} color="inherit" />}>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </CardActions>
     </Card>
   );
