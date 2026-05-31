@@ -1,0 +1,3 @@
+## 2026-05-31 - Enhanced Deletion Confirmation
+**Learning:** Replacing native `window.confirm` with themed MUI `Dialog` improves aesthetic consistency. Adding an asynchronous loading state (`isDeleting`) within the confirmation dialog prevents duplicate requests and provides immediate feedback for destructive operations. Placing the `Dialog` outside of components with CSS transforms (like hover scaling) prevents stacking context issues where high-z-index elements in the card could bleed through the dialog overlay.
+**Action:** Always prefer themed dialogs for destructive actions and manage asynchronous states to disable interactions during processing.
