@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardActions, Typography, IconButton, Divider, Chip, Box, Menu, MenuItem } from '@mui/material';
+import { Card, CardContent, CardActions, Typography, IconButton, Divider, Chip, Box, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -24,6 +24,7 @@ const statusColors: { [key in Booking['status']]: 'primary' | 'secondary' | 'suc
 
 const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateStatus }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -39,19 +40,21 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateSt
     handleClose();
   };
 
-  const handleDelete = async () => {
-    // This can be moved to HomePage if you want a confirmation dialog first
-    if (window.confirm('Are you sure you want to delete this booking?')) {
-        try {
-            await api.delete(`/api/bookings/${booking._id}`);
-            onDelete(booking._id);
-        } catch (error) {
-            console.error('Error deleting booking:', error);
-        }
+  const handleDelete = () => setIsDeleteDialogOpen(true);
+
+  const confirmDelete = async () => {
+    try {
+      await api.delete(`/api/bookings/${booking._id}`);
+      onDelete(booking._id);
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+    } finally {
+      setIsDeleteDialogOpen(false);
     }
   };
 
   return (
+    <>
     <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%', borderRadius: '12px', transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out', '&:hover': { transform: 'scale(1.02)', boxShadow: 6, } }}>
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -114,6 +117,20 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onDelete, onUpdateSt
         </Menu>
       </CardActions>
     </Card>
+
+    <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} aria-labelledby="delete-dialog-title">
+      <DialogTitle id="delete-dialog-title">Confirm Deletion</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Are you sure you want to delete the booking for <strong>{booking.customerName}</strong>? This action cannot be undone.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions sx={{ px: 3, pb: 2 }}>
+        <Button onClick={() => setIsDeleteDialogOpen(false)} color="inherit">Cancel</Button>
+        <Button onClick={confirmDelete} color="error" variant="contained" autoFocus>Delete</Button>
+      </DialogActions>
+    </Dialog>
+    </>
   );
 };
 

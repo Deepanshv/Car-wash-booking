@@ -1,0 +1,3 @@
+## 2025-05-15 - Themed Deletion Confirmation Dialog
+**Learning:** Browser-native `window.confirm` dialogs feel disjointed from a modern React/MUI interface and provide poor accessibility. Using a themed MUI `Dialog` improves visual consistency, allows for richer context (like displaying the specific item name being deleted), and provides better keyboard and screen reader support.
+**Action:** Always replace native `window.confirm` with a themed MUI `Dialog` to maintain UI consistency and professional aesthetic. Ensure the Dialog is placed outside any elements with CSS transforms (like hover scaling) by using a React Fragment or placing it at the top level of the component to avoid stacking context issues.
