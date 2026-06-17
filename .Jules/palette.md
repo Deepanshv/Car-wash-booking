@@ -1,0 +1,3 @@
+## 2025-05-14 - Replace native confirm with themed MUI Dialog
+**Learning:** Using native browser `window.confirm` breaks the application's aesthetic and provides a poor user experience. Replacing it with a themed MUI `Dialog` maintains UI consistency. Additionally, when a `Dialog` is triggered from a component with CSS transforms (like hover scaling), it must be placed outside that element (using a Fragment) to avoid stacking context issues where z-indexed children overlap the dialog.
+**Action:** Always prefer themed Dialog components over native browser prompts. Ensure Dialogs are correctly positioned in the DOM to avoid stacking context conflicts with parent transforms.
