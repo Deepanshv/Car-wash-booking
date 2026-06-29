@@ -4,3 +4,7 @@
 
 **Learning:** When using MUI Dialog inside a component that has a CSS transform (like `scale` on hover), the Dialog might be affected by the stacking context or transform of its parent.
 **Action:** Use a React Fragment to place the `Dialog` outside the transformed element to ensure it renders correctly as a top-level overlay.
+
+## 2025-06-12 - Disable secondary actions during form submission
+**Learning:** When implementing an `isSubmitting` state for form buttons, it is crucial to disable not only the submit button but also secondary actions like "Cancel" or "Reset". This prevents users from initiating navigation or state resets while an asynchronous operation is in progress, which could lead to inconsistent application states or race conditions.
+**Action:** Always disable all interactive elements in a form's action area during the submission lifecycle.
