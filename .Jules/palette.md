@@ -4,3 +4,7 @@
 
 **Learning:** When using MUI Dialog inside a component that has a CSS transform (like `scale` on hover), the Dialog might be affected by the stacking context or transform of its parent.
 **Action:** Use a React Fragment to place the `Dialog` outside the transformed element to ensure it renders correctly as a top-level overlay.
+
+## 2025-06-12 - Add loading state to form submission
+**Learning:** Adding a loading state (`isSubmitting`) to form submissions provides immediate visual feedback, prevents duplicate submissions by disabling the button, and improves UX by showing the progress of the action. Using context-aware labels (e.g., "Saving..." vs "Adding...") further clarifies the action being performed.
+**Action:** For all asynchronous form submissions, implement an `isSubmitting` state. Disable all form action buttons (Submit, Cancel) during submission, and show a loading spinner with a descriptive label on the primary action button. Ensure the state is reset in a `finally` block to handle both success and error cases.
