@@ -4,3 +4,7 @@
 
 **Learning:** When using MUI Dialog inside a component that has a CSS transform (like `scale` on hover), the Dialog might be affected by the stacking context or transform of its parent.
 **Action:** Use a React Fragment to place the `Dialog` outside the transformed element to ensure it renders correctly as a top-level overlay.
+
+## 2025-07-24 - Provide feedback during async form submission
+**Learning:** Adding a loading state (spinner and disabled buttons) during form submission prevents double-submissions and provides immediate visual feedback, making the interface feel more responsive and robust.
+**Action:** Use an `isSubmitting` state to disable form actions and show a progress indicator in the submit button's `startIcon` or `endIcon`.
