@@ -4,3 +4,7 @@
 
 **Learning:** When using MUI Dialog inside a component that has a CSS transform (like `scale` on hover), the Dialog might be affected by the stacking context or transform of its parent.
 **Action:** Use a React Fragment to place the `Dialog` outside the transformed element to ensure it renders correctly as a top-level overlay.
+
+## 2025-06-12 - Accessible Theme Toggle Tooltip and ARIA Label
+**Learning:** Icon-only buttons (like a theme toggle switch) are invisible to screen readers without descriptive aria-labels. When wrapping them with MUI Tooltips, always pair them with a dynamic `aria-label` matching the current destination state (e.g., 'switch to dark mode' vs 'switch to light mode') for seamless screen reader compatibility.
+**Action:** Always pair MUI `Tooltip` on icon-only action/toggle buttons with a corresponding, dynamic `aria-label` describing the action to be performed.
